@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <script>
+            function buyGadgetX () {
+              var xmlHttp = new XMLHttpRequest();
+              xmlHttp.open( "POST", "http://localhost:3000/buyGadget");
+              xmlHttp.send( null );
+              return xmlHttp.responseText;
+            }
+        </script>
+    </head>
+    <body>
+        Welcome to GadgetX's Shop!<br />
+
+        <button onclick="buyGadgetX()">Buy GadgetX</button>
+    </body>
+</html>
