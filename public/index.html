@@ -20,24 +20,71 @@
               return xmlHttp.responseText;
             }
 
-            function buyGadgetX () {
-              const xmlHttp = new XMLHttpRequest();
-              xmlHttp.open("POST", "http://localhost:3000/buyGadget");
-              xmlHttp.setRequestHeader("Content-Type", "application/json");
-              xmlHttp.send();
+            function clickBuyButton (e) {
+              notifySellify({
+                "event_name": "prospect_clicked_buy",
+                productId: 123,
+                prospectId: "asdf",
+                additionalInfo: {},
+              });
 
-              return xmlHttp.responseText;
+              $("#contactForm").show();
             }
 
             function openDetails() {
-              $(".details").show()
+              $(".details").show();
 
               notifySellify({
                 "event_name": "prospect_learns_more",
                 productId: 123,
                 prospectId: "asdf",
                 additionalInfo: {},
-              })
+              });
+            }
+
+            function nodeListToObject(htmlNodeList) {
+              const obj = {};
+
+              for (let i = 0; i < htmlNodeList.length; i++) {
+                obj[htmlNodeList.elements.item(i).name] = htmlNodeList.elements.item(i).value
+              }
+
+              return obj
+            }
+
+            function submitContactForm(evt) {
+              evt && evt.preventDefault();
+
+              $("#paymentForm").show();
+
+              notifySellify({
+                "event_name": "prospect_enters_contact_details",
+                productId: 123,
+                prospectId: "asdf",
+                additionalInfo: nodeListToObject(document.getElementById("contactForm")),
+              });
+
+              return false;
+            }
+
+            function submitPaymentForm(evt) {
+              evt && evt.preventDefault();
+
+              notifySellify({
+                "event_name": "prospect_attempts_payment",
+                productId: 123,
+                prospectId: "asdf",
+                additionalInfo: nodeListToObject(document.getElementById("paymentForm")),
+              });
+
+              const xmlHttp = new XMLHttpRequest();
+              xmlHttp.open("POST", "http://localhost:3000/buyGadget");
+              xmlHttp.setRequestHeader("Content-Type", "application/json");
+              xmlHttp.send();
+
+              xmlHttp.responseText;
+
+              return false;
             }
         </script>
     </head>
@@ -54,7 +101,20 @@
                 It is so good at the things that it does that you should
                 buy it immediately without any thought.
             </p>
-            <button onclick="buyGadgetX()">Buy GadgetX</button><br />
+            <button onclick="clickBuyButton()">Buy GadgetX</button><br />
         </div>
+
+        <form id="contactForm" onsubmit="submitContactForm(); return false;" style="display: none;">
+            <label>First Name: <input name="firstName" type="text" /></label><br />
+            <label>Last Name: <input name="lastName" type="text" /></label><br />
+            <label>Age: <input name="age" type="text" /></label><br />
+            <input type="submit" />
+        </form><br />
+
+        <form id="paymentForm" onsubmit="submitPaymentForm(); return false;" style="display: none;">
+            <label>Carrier: <input name="firstName" type="text" /></label><br />
+            <label>Number: <input name="firstName" type="text" /></label><br />
+            <input type="submit" value="Buy"/>
+        </form><br />
     </body>
 </html>
